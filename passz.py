@@ -5,15 +5,15 @@ import time
 
 import requests
 
-BASE_JIRA_URL = "https://orionjira.atlassian.net"
+BASE_JIRA_URL = ""
 ZAPI_URL = "https://prod-api.zephyr4jiracloud.com/connect"
 ZAPI_VERSION = "/public/rest/api/1.0"
 # Jira login
-LOGIN = "german_petrov@epam.com"
+LOGIN = ""
 # Go to Jira > Tests > API Keys > Access Key
-ACCESS_KEY = "amlyYToxMDY0NjEyNSBnZXJtYW5fcGV0cm92IFVTRVJfREVGQVVMVF9OQU1F"
+ACCESS_KEY = ""
 # Go to Jira > Tests > API Keys > Secret Key
-SECRET_KEY = "eAdJ_stbztKGbvxQerBYfsAXeu2_3o_uGz2hZ1cLFaw"
+SECRET_KEY = ""
 # ID of Your project
 PROJECT_ID = 12730
 # ID of version. This one for 1.1.151, increment on 1 for 1.1.152, etc.
