@@ -2,22 +2,20 @@ import hashlib
 import json
 import jwt
 import time
+import yaml
 
 import requests
 
-BASE_JIRA_URL = ""
-ZAPI_URL = "https://prod-api.zephyr4jiracloud.com/connect"
-ZAPI_VERSION = "/public/rest/api/1.0"
-# Jira login
-LOGIN = ""
-# Go to Jira > Tests > API Keys > Access Key
-ACCESS_KEY = ""
-# Go to Jira > Tests > API Keys > Secret Key
-SECRET_KEY = ""
-# ID of Your project
-PROJECT_ID = 12730
-# ID of version. This one for 1.1.151, increment on 1 for 1.1.152, etc.
-VERSION_ID = 18230
+config = yaml.safe_load(open("config.yml"))
+
+BASE_JIRA_URL = config.get("jira")
+ZAPI_URL = config.get("zapi")
+ZAPI_VERSION = config.get("zapi_version")
+LOGIN = config.get("login")
+ACCESS_KEY = config.get("access_key")
+SECRET_KEY = config.get("secret_key")
+PROJECT_ID = config.get("project_id")
+VERSION_ID = config.get("version_id")
 
 JWT_EXPIRE = 3600
 DEFAULT_HEADERS = {"zapiAccessKey": ACCESS_KEY}
