@@ -150,6 +150,6 @@ def _handle_response_status(response):
 
 if __name__ == '__main__':
     cycle = get_cycle("1.1.151 Regression test")
-    unexecuted = get_executions_by_status_and_label(cycle, "PASS", ["automated"])
+    unexecuted = get_executions_by_status_and_label(cycle, "UNEXECUTED", ["automated"])
     for execution in unexecuted:
-        update_execution_status(execution, "UNEXECUTED")
+        update_execution_status(execution, "PASS")
