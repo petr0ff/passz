@@ -77,8 +77,31 @@ def get_executions_by_status_and_label(cycle, status, labels):
     return by_status
 
 
+def get_execution_by_issue_key(cycle, issue_key):
+    logging.info("Find executions for issue %s in Test Cycle %s" % (issue_key, cycle["name"]))
+    processed = 0
+    executions = get_list_of_executions(cycle["id"], processed)
+    by_status = []
+    content = json.loads(executions)
+    total_executions = content["totalCount"]
+    logging.info("Executions search criteria: %s" % issue_key)
+    logging.info("Total executions in cycle: %s" % total_executions)
+    while processed <= total_executions:
+        for execution in content["searchObjectList"]:
+            if execution["issueKey"] == issue_key:
+                logging.info("Found!")
+                return execution
+        # 50 is max fetch size in zapi
+        processed += 50
+        executions = get_list_of_executions(cycle["id"], processed)
+        content = json.loads(executions)
+        logging.info("Processed executions: %s and found matching criteria: %s" % (processed, len(by_status)))
+    raise Exception("Couldn't find execution for issue %s" % issue_key)
+
+
 if __name__ == '__main__':
-    cycle = get_cycle("1.1.151 Regression test")
+    cycle = get_cycle("1.1.152 Regression test")
+    # executions_to_process = get_execution_by_issue_key(cycle, "FLOW-4766")
     executions_to_process = get_executions_by_status_and_label(cycle, "UNEXECUTED", ["automated"])
     for execution in executions_to_process:
         update_execution_status(execution, "PASS")
