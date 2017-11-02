@@ -68,6 +68,7 @@ def get_executions_by_status_and_label(cycle, status, labels):
             if execution["execution"]["status"]["name"] == status and set(labels) < set(
                     execution["issueLabel"].split(",")):
                 by_status.append(execution)
+        # 50 is max fetch size in zapi
         offset += 50
         executions = get_list_of_executions(cycle["id"], offset)
         content = json.loads(executions)
@@ -78,6 +79,6 @@ def get_executions_by_status_and_label(cycle, status, labels):
 
 if __name__ == '__main__':
     cycle = get_cycle("1.1.151 Regression test")
-    unexecuted = get_executions_by_status_and_label(cycle, "UNEXECUTED", ["automated"])
-    for execution in unexecuted:
+    executions_to_process = get_executions_by_status_and_label(cycle, "UNEXECUTED", ["automated"])
+    for execution in executions_to_process:
         update_execution_status(execution, "PASS")
