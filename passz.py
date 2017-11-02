@@ -133,6 +133,6 @@ def _handle_response_status(response):
         raise Exception(response.url, response.content)
 
 if __name__ == '__main__':
-    unexecuted = get_executions_by_status_and_label("1.1.151 Performance test", "UNEXECUTED", ["automated"])
+    unexecuted = get_executions_by_status_and_label("1.1.151 Regression test", "UNEXECUTED", ["automated"])
     for execution in unexecuted:
         update_execution_status(execution, "PASS")
