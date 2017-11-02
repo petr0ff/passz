@@ -44,9 +44,11 @@ class ZapiCalls(object):
 
 def update_bulk_executions_status(executions, status):
     # Request doesn't work
+    execution_ids = [eid["execution"]["id"] for eid in executions]
+    logging.info("Set status %s for %s executions" % (status, len(execution_ids)))
     req = {
         "status": STATUSES[status],
-        "executions": executions
+        "executions": execution_ids
     }
     canonical_path = ZapiCalls.POST_EXECUTIONS
     return _post_request(canonical_path, json.dumps(req))
@@ -146,7 +148,7 @@ def _handle_response_status(response):
     if response.status_code in (200, 201, 204):
         return response
     else:
-        raise Exception(response.url, response.content)
+        raise Exception(response.url, response.content, response.status_code)
 
 if __name__ == '__main__':
     cycle = get_cycle("1.1.151 Regression test")
