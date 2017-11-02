@@ -71,6 +71,13 @@ def put_request(canonical_uri, payload=None):
     return handle_response_status(r)
 
 
+def delete_request(canonical_uri, canonical_path):
+    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("DELETE&%s&%s" % (canonical_uri, canonical_path))
+    res = ZAPI_URL + canonical_uri + "?%s" % canonical_path
+    r = requests.delete(res, headers=DEFAULT_HEADERS)
+    return handle_response_status(r)
+
+
 def handle_response_status(response):
     if response.status_code in (200, 201, 204):
         return response
