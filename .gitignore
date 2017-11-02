@@ -1,8 +1,8 @@
-# configuration file
-*.yml
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 .idea/
+
+# configuration file
+config.yml
