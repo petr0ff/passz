@@ -1,10 +1,15 @@
 import hashlib
 import json
 import jwt
+import logging
 import time
 import yaml
 
 import requests
+
+logging.basicConfig(filename="pass_machine_%s.log" % time.time(), level=logging.INFO)
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 config = yaml.safe_load(open("config.yml"))
 
@@ -37,20 +42,6 @@ class ZapiCalls(object):
     GET_EXECUTIONS_BY_SPRINT = "%s/executions/search/sprint" % ZAPI_VERSION
 
 
-def get_cycles():
-    canonical_path = "expand=&projectId=%s&versionId=%s" % (PROJECT_ID, VERSION_ID)
-    return _get_request(ZapiCalls.GET_CYCLES, canonical_path)
-
-
-def get_cycle(cycle_name):
-    resp = get_cycles().content
-    content = json.loads(resp)
-    cycle = filter(lambda x: x["name"] == cycle_name, content)
-    if not cycle:
-        raise Exception("Cycle %s is not found!" % cycle_name)
-    return cycle[0]
-
-
 def update_bulk_executions_status(executions, status):
     # Request doesn't work
     req = {
@@ -71,23 +62,48 @@ def update_execution_status(execution, status):
     }
     canonical_path = ZapiCalls.PUT_EXECUTION
     resp = _put_request(canonical_path + "/" + execution["execution"]["id"], json.dumps(req))
-    print "Test-case %s is now in status %s" % (execution["issueKey"], status)
+    logging.info("Test-case %s is now in status %s. Labels are: %s" % (execution["issueKey"], status, execution["issueLabel"].split(",")))
     return resp
 
 
-def get_list_of_executions(cycle):
-    cycle_id = get_cycle(cycle)
-    canonical_path = "expand=action&projectId=%s&versionId=%s" % (PROJECT_ID, VERSION_ID)
-    return _get_request(ZapiCalls.GET_EXECUTIONS_LIST + "/" + cycle_id["id"], canonical_path).content
+def get_cycles():
+    canonical_path = "expand=executions&projectId=%s&versionId=%s" % (PROJECT_ID, VERSION_ID)
+    return _get_request(ZapiCalls.GET_CYCLES, canonical_path)
+
+
+def get_cycle(cycle_name):
+    resp = get_cycles().content
+    content = json.loads(resp)
+    cycle = filter(lambda x: x["name"] == cycle_name, content)
+    if not cycle:
+        raise Exception("Cycle %s is not found!" % cycle_name)
+    return cycle[0]
+
+
+def get_list_of_executions(cycle, offset):
+    canonical_path = "expand=action&offset=%s&projectId=%s&versionId=%s" % (offset, PROJECT_ID, VERSION_ID)
+    return _get_request(ZapiCalls.GET_EXECUTIONS_LIST + "/" + cycle, canonical_path).content
 
 
 def get_executions_by_status_and_label(cycle, status, labels):
-    executions = get_list_of_executions(cycle)
+    logging.info("Find executions with status %s in Test Cycle %s" % (status, cycle["name"]))
+    offset = 0
+    executions = get_list_of_executions(cycle["id"], offset)
     by_status = []
     content = json.loads(executions)
-    for execution in content["searchObjectList"]:
-        if execution["execution"]["status"]["name"] == status and set(labels) < set(execution["issueLabel"].split(",")):
-            by_status.append(execution)
+    total_executions = content["totalCount"]
+    logging.info("Executions search criteria: %s" % labels)
+    logging.info("Total executions in cycle: %s" % total_executions)
+    while offset <= total_executions:
+        for execution in content["searchObjectList"]:
+            if execution["execution"]["status"]["name"] == status and set(labels) < set(
+                    execution["issueLabel"].split(",")):
+                by_status.append(execution)
+        offset += 50
+        executions = get_list_of_executions(cycle["id"], offset)
+        content = json.loads(executions)
+        logging.info("Processed executions: %s and found matching criteria: %s" % (offset, len(by_status)))
+    logging.info("Total executions matching criteria: %s" % len(by_status))
     return by_status
 
 
@@ -133,6 +149,7 @@ def _handle_response_status(response):
         raise Exception(response.url, response.content)
 
 if __name__ == '__main__':
-    unexecuted = get_executions_by_status_and_label("1.1.151 Regression test", "UNEXECUTED", ["automated"])
+    cycle = get_cycle("1.1.151 Regression test")
+    unexecuted = get_executions_by_status_and_label(cycle, "PASS", ["automated"])
     for execution in unexecuted:
-        update_execution_status(execution, "PASS")
+        update_execution_status(execution, "UNEXECUTED")
