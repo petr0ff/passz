@@ -56,23 +56,23 @@ def get_list_of_executions(cycle, offset):
 
 def get_executions_by_status_and_label(cycle, status, labels):
     logging.info("Find executions with status %s in Test Cycle %s" % (status, cycle["name"]))
-    offset = 0
-    executions = get_list_of_executions(cycle["id"], offset)
+    processed = 0
+    executions = get_list_of_executions(cycle["id"], processed)
     by_status = []
     content = json.loads(executions)
     total_executions = content["totalCount"]
     logging.info("Executions search criteria: %s" % labels)
     logging.info("Total executions in cycle: %s" % total_executions)
-    while offset <= total_executions:
+    while processed <= total_executions:
         for execution in content["searchObjectList"]:
             if execution["execution"]["status"]["name"] == status and set(labels) < set(
                     execution["issueLabel"].split(",")):
                 by_status.append(execution)
         # 50 is max fetch size in zapi
-        offset += 50
-        executions = get_list_of_executions(cycle["id"], offset)
+        processed += 50
+        executions = get_list_of_executions(cycle["id"], processed)
         content = json.loads(executions)
-        logging.info("Processed executions: %s and found matching criteria: %s" % (offset, len(by_status)))
+        logging.info("Processed executions: %s and found matching criteria: %s" % (processed, len(by_status)))
     logging.info("Total executions matching criteria: %s" % len(by_status))
     return by_status
 
