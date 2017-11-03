@@ -6,4 +6,4 @@ login: updateme # Jira login
 access_key: updateme # Go to Jira > Tests > API Keys > Access Key
 secret_key: updateme # Go to Jira > Tests > API Keys > Secret Key
 project_id: updateme # ID of Your project
-version_id: updateme # ID of version. This one for 1.1.151, increment on 1 for 1.1.152, etc
+version_id: updateme # ID of version of test cycles
