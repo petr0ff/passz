@@ -1,0 +1,8 @@
+#
+####### requirements.txt #######
+# PyJWT - lib for generating JWT tokens
+PyJWT
+# requests - lib for http calls
+requests>=2.9.0
+# pyyaml - lib for reading .yml files
+pyyaml
