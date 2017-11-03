@@ -84,7 +84,7 @@ def get_execution_by_issue_key(cycle, issue_key):
     by_status = []
     content = json.loads(executions)
     total_executions = content["totalCount"]
-    logging.info("Executions search criteria: %s" % issue_key)
+    logging.info("Search by issue: %s" % issue_key)
     logging.info("Total executions in cycle: %s" % total_executions)
     while processed <= total_executions:
         for execution in content["searchObjectList"]:
@@ -100,7 +100,7 @@ def get_execution_by_issue_key(cycle, issue_key):
 
 
 if __name__ == '__main__':
-    cycle = get_cycle("1.1.152 Regression test")
+    cycle = get_cycle("1.1.151 Regression test")
     # executions_to_process = get_execution_by_issue_key(cycle, "FLOW-4766")
     executions_to_process = get_executions_by_status_and_label(cycle, "UNEXECUTED", ["automated"])
     for execution in executions_to_process:
