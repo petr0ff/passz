@@ -1,8 +1,8 @@
-jira: https://orionjira.atlassian.net
+jira: updateme
 zapi: https://prod-api.zephyr4jiracloud.com/connect
 zapi_version: /public/rest/api/1.0
-login: german_petrov@epam.com # Jira login
-access_key: amlyYToxMDY0NjEyNSBnZXJtYW5fcGV0cm92IFVTRVJfREVGQVVMVF9OQU1F # Go to Jira > Tests > API Keys > Access Key
-secret_key: eAdJ_stbztKGbvxQerBYfsAXeu2_3o_uGz2hZ1cLFaw # Go to Jira > Tests > API Keys > Secret Key
-project_id: 12730 # ID of Your project
-version_id: 18231 # ID of version. This one for 1.1.151, increment on 1 for 1.1.152, etc.
+login: updateme # Jira login
+access_key: updateme # Go to Jira > Tests > API Keys > Access Key
+secret_key: updateme # Go to Jira > Tests > API Keys > Secret Key
+project_id: updateme # ID of Your project
+version_id: updateme # ID of version. This one for 1.1.151, increment on 1 for 1.1.152, etc
