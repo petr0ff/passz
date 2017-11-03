@@ -5,7 +5,10 @@ import yaml
 
 import requests
 
-config = yaml.safe_load(open("config.yml"))
+try:
+    config = yaml.safe_load(open("config.yml"))
+except IOError:
+    raise Exception("Please, create config.yml from config.yml.example")
 
 BASE_JIRA_URL = config.get("jira")
 ZAPI_URL = config.get("zapi")
