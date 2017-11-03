@@ -5,7 +5,7 @@ __pycache__/
 .idea/
 
 # configuration file
-#config.yml
+config.yml
 
 # log file
 *.log
