@@ -16,8 +16,9 @@ ZAPI_VERSION = config.get("zapi_version")
 LOGIN = config.get("login")
 ACCESS_KEY = config.get("access_key")
 SECRET_KEY = config.get("secret_key")
-PROJECT_ID = config.get("project_id")
-VERSION_ID = config.get("version_id")
+
+JWT_EXPIRE = 3600
+DEFAULT_HEADERS = {"zapiAccessKey": ACCESS_KEY}
 
 STATUSES = {
     "PASS": 1,
@@ -30,13 +31,10 @@ STATUSES = {
 
 class ZapiCalls(object):
     GET_CYCLES = "%s/cycles/search" % ZAPI_VERSION
+    GET_ZQL_FIELDS = "%s/zql/fields/values" % ZAPI_VERSION
     POST_EXECUTIONS = "%s/executions" % ZAPI_VERSION
     PUT_EXECUTION = "%s/execution" % ZAPI_VERSION
     GET_EXECUTIONS_LIST = "%s/executions/search/cycle" % ZAPI_VERSION
-    GET_EXECUTIONS_BY_SPRINT = "%s/executions/search/sprint" % ZAPI_VERSION
-
-JWT_EXPIRE = 3600
-DEFAULT_HEADERS = {"zapiAccessKey": ACCESS_KEY}
 
 
 def get_jwt(canonical):
@@ -54,6 +52,13 @@ def get_jwt(canonical):
 def get_request(canonical_uri, canonical_path):
     DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("GET&%s&%s" % (canonical_uri, canonical_path))
     res = ZAPI_URL + canonical_uri + "?%s" % canonical_path
+    r = requests.get(res, headers=DEFAULT_HEADERS)
+    return handle_response_status(r)
+
+
+def get_request_no_params(canonical_uri):
+    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("GET&%s&" % canonical_uri)
+    res = ZAPI_URL + canonical_uri
     r = requests.get(res, headers=DEFAULT_HEADERS)
     return handle_response_status(r)
 
