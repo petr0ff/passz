@@ -13,12 +13,12 @@ except IOError:
 BASE_JIRA_URL = config.get("jira")
 ZAPI_URL = config.get("zapi")
 ZAPI_VERSION = config.get("zapi_version")
-LOGIN = config.get("login")
-ACCESS_KEY = config.get("access_key")
-SECRET_KEY = config.get("secret_key")
+JIRA_LOGIN = config.get("login")
+ZAPI_ACCESS_KEY = config.get("access_key")
+ZAPI_SECRET_KEY = config.get("secret_key")
 
 JWT_EXPIRE = 3600
-DEFAULT_HEADERS = {"zapiAccessKey": ACCESS_KEY}
+DEFAULT_HEADERS = {"zapiAccessKey": ZAPI_ACCESS_KEY}
 
 STATUSES = {
     "PASS": 1,
@@ -39,13 +39,13 @@ class ZapiCalls(object):
 
 def get_jwt(canonical):
     payload_token = {
-        'sub': LOGIN,
+        'sub': JIRA_LOGIN,
         'qsh': hashlib.sha256(canonical.encode('utf-8')).hexdigest(),
-        'iss': ACCESS_KEY,
+        'iss': ZAPI_ACCESS_KEY,
         'exp': int(time.time()) + JWT_EXPIRE,
         'iat': int(time.time())
     }
-    token = jwt.encode(payload_token, SECRET_KEY, algorithm='HS256').strip().decode('utf-8')
+    token = jwt.encode(payload_token, ZAPI_SECRET_KEY, algorithm='HS256').strip().decode('utf-8')
     return token
 
 
