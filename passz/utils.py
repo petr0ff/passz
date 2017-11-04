@@ -6,7 +6,7 @@ import yaml
 import requests
 
 try:
-    config = yaml.safe_load(open("config.yml"))
+    config = yaml.safe_load(open("../config.yml"))
 except IOError:
     raise Exception("Please, create config.yml from config.yml.example")
 

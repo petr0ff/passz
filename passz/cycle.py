@@ -4,7 +4,7 @@ import time
 
 import utils
 
-logging.basicConfig(filename="log/pass_machine_%s.log" % time.time(), level=logging.INFO)
+logging.basicConfig(filename="../log/pass_machine_%s.log" % time.time(), level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler())
 logging.getLogger("requests").setLevel(logging.WARNING)
 
