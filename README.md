@@ -1,5 +1,5 @@
 # passz
-Small script to set Jira Zephyr test executions via ZAPI
+Small lib to set Jira Zephyr test executions via ZAPI
 
 ## you can:
 - change execution status for all test-cases in a given cycle
