@@ -1,8 +1,19 @@
 import json
 import logging
+import os
 import time
 
+import errno
+
 import utils
+
+
+if not os.path.exists(os.path.dirname("../log/")):
+    try:
+        os.makedirs(os.path.dirname("../log/"))
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
 
 logging.basicConfig(filename="../log/pass_machine_%s.log" % time.time(), level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler())
