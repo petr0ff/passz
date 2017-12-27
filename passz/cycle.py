@@ -24,7 +24,7 @@ class Cycle(object):
     def __init__(self):
         self._project_name = utils.JIRA_PROJECT
         self._cycle_name = utils.TEST_CYCLE
-        self._ids = self.get_project_and_cycle(self._project_name, self._cycle_name)
+        self._ids = self.get_project_and_cycle(self._cycle_name, self._project_name)
         self._project_id = self._ids["project_id"]
         self._version_id = self._ids["version_id"]
         self._cycle_id = self._ids["cycle_id"]
