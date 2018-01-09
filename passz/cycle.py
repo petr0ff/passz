@@ -101,7 +101,7 @@ class Cycle(object):
         logging.info("Done! Cached executions: %s" % total_executions)
         return execs
 
-    def get_executions_by_status_and_labels(self, status, labels):
+    def get_executions_by_status_and_labels(self, status, labels=[]):
         logging.info("Find executions with status %s in Test Cycle %s" % (status, self._cycle_name))
         by_status = []
         logging.info("Executions search criteria: %s" % labels)
