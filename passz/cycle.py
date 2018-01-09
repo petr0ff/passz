@@ -21,13 +21,13 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 class Cycle(object):
-    def __init__(self, project_name, cycle_name):
-        self._ids = self.get_project_and_cycle(project_name, cycle_name)
+    def __init__(self):
+        self._project_name = utils.JIRA_PROJECT
+        self._cycle_name = utils.TEST_CYCLE
+        self._ids = self.get_project_and_cycle(self._cycle_name, self._project_name)
         self._project_id = self._ids["project_id"]
         self._version_id = self._ids["version_id"]
         self._cycle_id = self._ids["cycle_id"]
-        self._project_name = project_name
-        self._cycle_name = cycle_name
         self._executions = self.get_all_executions_in_cycle()
 
     def get_project_and_cycle(self, cycle_name, project_name):
