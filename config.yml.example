@@ -1,5 +1,5 @@
 # Create config.yml from this file and update with correct values
-jira: updateme
+jira: updateme # Jira URL
 zapi: https://prod-api.zephyr4jiracloud.com/connect
 zapi_version: /public/rest/api/1.0
 login: updateme # Jira login
