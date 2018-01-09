@@ -87,6 +87,8 @@ class Cycle(object):
         return utils.get_request(utils.ZapiCalls.GET_EXECUTIONS_LIST + "/" + self._cycle_id, canonical_path).json()
 
     def get_all_executions_in_cycle(self):
+        """Get all executions, ignoring status and labels.
+        """
         logging.info("Get all executions in Test Cycle %s and cache it" % self._cycle_name)
         processed = 0
         content = self.get_list_of_executions(processed)
@@ -101,7 +103,15 @@ class Cycle(object):
         logging.info("Done! Cached executions: %s" % total_executions)
         return execs
 
-    def get_executions_by_status_and_labels(self, status, labels=[]):
+    def get_executions_by_status_and_labels(self, status, labels=None):
+        """Get executions by status and labels.
+
+        :param status: status of test execution, for example UNEXECUTED
+        :param labels: list of issue labels, like ["automated", "regression"].
+                       Omit param if search by labels is not needed
+        """
+        if labels is None:
+            labels = []
         logging.info("Find executions with status %s in Test Cycle %s" % (status, self._cycle_name))
         by_status = []
         logging.info("Executions search criteria: %s" % labels)
@@ -114,6 +124,10 @@ class Cycle(object):
         return by_status
 
     def get_execution_by_issue_key(self, issue_key):
+        """Get executions by issue key.
+
+        :param issue_key: the issue key of test execution, <project>-<issue_id>
+        """
         logging.info("Find executions for issue %s in Test Cycle %s" % (issue_key, self._cycle_name))
         for execution in self._executions:
             if execution["issueKey"] == issue_key:
