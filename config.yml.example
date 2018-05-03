@@ -7,3 +7,8 @@ access_key: updateme # Go to Jira > Tests > API Keys > Access Key
 secret_key: updateme # Go to Jira > Tests > API Keys > Secret Key
 project: updateme # Your Jira project
 test_cycle: updateme # Your Zephyr test cycle that needs to be executed
+status_from: UNEXECUTED
+status_to: PASS
+# labels of test-cases
+search_by:
+- 'automated'

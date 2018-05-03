@@ -29,6 +29,9 @@ class Cycle(object):
         self._version_id = self._ids["version_id"]
         self._cycle_id = self._ids["cycle_id"]
         self._executions = self.get_all_executions_in_cycle()
+        self._labels = utils.LABELS
+        self._status_from = utils.STATUS_FROM
+        self._status_to = utils.STATUS_TO
 
     def get_project_and_cycle(self, cycle_name, project_name):
         logging.info("Get project id, version id and cycle id for project '%s' and cycle '%s'" % (project_name,
@@ -135,3 +138,15 @@ class Cycle(object):
                 return execution
         logging.warn("Didn't find execution for issue %s" % issue_key)
         return None
+
+    @property
+    def status_to(self):
+        return self._status_to
+
+    @property
+    def status_from(self):
+        return self._status_from
+
+    @property
+    def labels(self):
+        return self._labels

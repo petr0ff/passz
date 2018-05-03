@@ -18,6 +18,9 @@ ZAPI_ACCESS_KEY = config.get("access_key")
 ZAPI_SECRET_KEY = config.get("secret_key")
 JIRA_PROJECT = config.get("project")
 TEST_CYCLE = config.get("test_cycle")
+LABELS = config.get("search_by")
+STATUS_FROM = config.get("status_from")
+STATUS_TO = config.get("status_to")
 
 JWT_EXPIRE = 3600
 DEFAULT_HEADERS = {"zapiAccessKey": ZAPI_ACCESS_KEY}
