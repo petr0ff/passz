@@ -1,9 +1,12 @@
+from base64 import b64encode
 import hashlib
+
 import jwt
 import time
 import yaml
 
 import requests
+requests.adapters.DEFAULT_RETRIES = 60
 
 try:
     config = yaml.safe_load(open("../config.yml"))
@@ -14,6 +17,8 @@ BASE_JIRA_URL = config.get("jira")
 ZAPI_URL = config.get("zapi")
 ZAPI_VERSION = config.get("zapi_version")
 JIRA_LOGIN = config.get("login")
+JIRA_PASSWORD = config.get("password")
+JIRA_CLOUD = config.get("jira_cloud")
 ZAPI_ACCESS_KEY = config.get("access_key")
 ZAPI_SECRET_KEY = config.get("secret_key")
 JIRA_PROJECT = config.get("project")
@@ -23,7 +28,7 @@ STATUS_FROM = config.get("status_from")
 STATUS_TO = config.get("status_to")
 
 JWT_EXPIRE = 3600
-DEFAULT_HEADERS = {"zapiAccessKey": ZAPI_ACCESS_KEY}
+DEFAULT_HEADERS = {}
 
 STATUSES = {
     "PASS": 1,
@@ -54,40 +59,48 @@ def get_jwt(canonical):
     return token
 
 
+def get_auth(cloud_path):
+    if JIRA_CLOUD:
+        DEFAULT_HEADERS["zapiAccessKey"] = ZAPI_ACCESS_KEY
+        DEFAULT_HEADERS["Authorization"] = "JWT %s" % cloud_path
+    else:
+        DEFAULT_HEADERS["Authorization"] = "Basic %s" % b64encode(JIRA_LOGIN + ":" + JIRA_PASSWORD)
+
+
 def get_request(canonical_uri, canonical_path):
-    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("GET&%s&%s" % (canonical_uri, canonical_path))
+    get_auth(get_jwt("GET&%s&%s" % (canonical_uri, canonical_path)))
     res = ZAPI_URL + canonical_uri + "?%s" % canonical_path
-    r = requests.get(res, headers=DEFAULT_HEADERS)
+    r = requests.get(res, headers=DEFAULT_HEADERS, timeout=180)
     return handle_response_status(r)
 
 
 def get_request_no_params(canonical_uri):
-    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("GET&%s&" % canonical_uri)
+    get_auth(get_jwt("GET&%s&" % canonical_uri))
     res = ZAPI_URL + canonical_uri
-    r = requests.get(res, headers=DEFAULT_HEADERS)
+    r = requests.get(res, headers=DEFAULT_HEADERS, timeout=180)
     return handle_response_status(r)
 
 
 def post_request(canonical_uri, payload=None):
-    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("POST&%s&" % canonical_uri)
+    get_auth(get_jwt("POST&%s&" % canonical_uri))
     DEFAULT_HEADERS["Content-Type"] = "application/json"
     res = ZAPI_URL + canonical_uri
-    r = requests.post(res, data=payload, headers=DEFAULT_HEADERS)
+    r = requests.post(res, data=payload, headers=DEFAULT_HEADERS, timeout=180)
     return handle_response_status(r)
 
 
 def put_request(canonical_uri, payload=None):
-    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("PUT&%s&" % canonical_uri)
+    get_auth(get_jwt("PUT&%s&" % canonical_uri))
     DEFAULT_HEADERS["Content-Type"] = "application/json"
     res = ZAPI_URL + canonical_uri
-    r = requests.put(res, data=payload, headers=DEFAULT_HEADERS)
+    r = requests.put(res, data=payload, headers=DEFAULT_HEADERS, timeout=180)
     return handle_response_status(r)
 
 
 def delete_request(canonical_uri, canonical_path):
-    DEFAULT_HEADERS["Authorization"] = "JWT %s" % get_jwt("DELETE&%s&%s" % (canonical_uri, canonical_path))
+    get_auth(get_jwt("DELETE&%s&%s" % (canonical_uri, canonical_path)))
     res = ZAPI_URL + canonical_uri + "?%s" % canonical_path
-    r = requests.delete(res, headers=DEFAULT_HEADERS)
+    r = requests.delete(res, headers=DEFAULT_HEADERS, timeout=180)
     return handle_response_status(r)
 
 

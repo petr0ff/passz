@@ -6,6 +6,7 @@ __pycache__/
 
 # configuration file
 config.yml
+config-*.yml
 
 # log file
 *.log
