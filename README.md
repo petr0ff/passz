@@ -9,5 +9,4 @@ Small lib to set Jira Zephyr test executions via ZAPI
 ## usage:
 - pip install -r requirements.txt
 - create config.yml from config.yml.example
-- update passz.py with required statuses and labels
 - run passz.py
